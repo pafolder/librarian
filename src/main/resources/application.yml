@@ -1,5 +1,5 @@
 cbr:
-  version: 0.2
+  version: 0.5
 spring:
   datasource:
     username: sa
