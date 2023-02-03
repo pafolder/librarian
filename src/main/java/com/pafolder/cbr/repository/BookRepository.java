@@ -17,11 +17,14 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     @Query("SELECT b FROM Book b WHERE b.author = :author")
     List<Book> findAllByAuthor(String author);
 
+    @Query("SELECT b FROM Book b WHERE b.title ILIKE '%' + :substring + '%'")
+    List<Book> findAllBySubstringInTitle(String substring);
+
     @Cacheable(value = "books")
     Optional<Book> findById(int id);
 
     @Transactional
-    @Query("UPDATE Book b SET b.amount=:amount WHERE b.id=:id")
+    @Query("UPDATE Book b SET b.amount = :amount WHERE b.id = :id")
     @Modifying
     void updateAmount(@Parameter int id, @Parameter int amount);
 }

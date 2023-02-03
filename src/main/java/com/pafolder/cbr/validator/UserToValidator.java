@@ -36,8 +36,7 @@ public class UserToValidator implements Validator {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             int authUserId = ((UserDetailsImpl) authentication.getPrincipal()).getUser().getId();
             String requestURI = request.getRequestURI();
-            if (requestURI.endsWith("/" + dbId) || (dbId == authUserId && requestURI.contains("/profile")))
-                return;
+            if (requestURI.endsWith("/" + dbId) || (dbId == authUserId && requestURI.contains("/profile"))) return;
         }
         errors.reject("", DUPLICATING_EMAIL);
     }

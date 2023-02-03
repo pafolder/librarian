@@ -1,4 +1,4 @@
-package com.pafolder.cbr.controller;
+package com.pafolder.cbr.controller.profile;
 
 import com.pafolder.cbr.controller.admin.AdminUserController;
 import com.pafolder.cbr.model.User;

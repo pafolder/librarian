@@ -1,8 +1,7 @@
 package com.pafolder.cbr.controller.admin;
 
-import com.pafolder.cbr.controller.CheckoutController;
+import com.pafolder.cbr.controller.profile.CheckoutController;
 import com.pafolder.cbr.model.Checkout;
-import com.pafolder.cbr.repository.BookRepository;
 import com.pafolder.cbr.repository.CheckoutRepository;
 import com.pafolder.cbr.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;

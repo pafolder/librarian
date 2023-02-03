@@ -1,4 +1,4 @@
-package com.pafolder.cbr.controller;
+package com.pafolder.cbr.controller.profile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
@@ -9,6 +9,7 @@ import com.pafolder.cbr.model.User;
 import com.pafolder.cbr.repository.BookRepository;
 import com.pafolder.cbr.repository.CheckoutRepository;
 import com.pafolder.cbr.security.UserDetailsImpl;
+import com.pafolder.cbr.service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -31,7 +32,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.pafolder.cbr.controller.BookController.NO_BOOK_FOUND;
+import static com.pafolder.cbr.controller.admin.AdminCheckoutController.NO_CHECKOUT_FOUND;
+import static com.pafolder.cbr.controller.profile.BookController.NO_BOOK_FOUND;
 
 @RestController
 @AllArgsConstructor
@@ -42,31 +44,36 @@ public class CheckoutController {
     public static final String NO_BOOKS_BORROWED = "No books borrowed";
     public static final String BOOK_IS_TEMPORARY_UNAVAILABLE = "Book is temporary unavailable";
     public static final String BORROWING_PROHIBITED = "Borrowing is prohibited because the violation limit exceeded";
+    public static final String CHECKOUT_OF_ANOTHER_USER = "Checkout of another user";
+    public static final int MAX_BOOKS_ALLOWED_AT_ONCE = 3;
+    public static final String BORROWING_PROHIBITED_LIMIT_REACHED =
+            "Borrowing is prohibited because the limit of " + MAX_BOOKS_ALLOWED_AT_ONCE + " books reached";
     private static final int MAX_BORROW_DURATION_IN_DAYS = 14;
     public static final int MAX_VIOLATIONS = 2;
     private final Logger log = LoggerFactory.getLogger(getClass());
     private BookRepository bookRepository;
     private CheckoutRepository checkoutRepository;
+    private UserServiceImpl userService;
 
     @GetMapping
     @Operation(summary = "Get authenticated user's borrowed books", security = {@SecurityRequirement(name = "basicScheme")})
     public MappingJacksonValue get(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         log.info("get()");
-        List<Checkout> checkouts = checkoutRepository.findAllByUser(userDetails.getUser());
+        List<Checkout> checkouts = checkoutRepository.findAllActiveByUser(userDetails.getUser());
         if (checkouts.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, NO_BOOKS_BORROWED);
         }
         return getFilteredCheckoutsJson(checkouts);
     }
 
-    private MappingJacksonValue getFilteredCheckoutsJson(List<Checkout> checkouts) {
+    private <T> MappingJacksonValue getFilteredCheckoutsJson(T object) {
         SimpleFilterProvider filterProvider = new SimpleFilterProvider()
                 .addFilter("checkoutJsonFilter",
-                        SimpleBeanPropertyFilter.filterOutAllExcept("checkout", "book"))
+                        SimpleBeanPropertyFilter.filterOutAllExcept("id", "checkoutDateTime", "book"))
                 .addFilter("bookJsonFilter",
-                        SimpleBeanPropertyFilter.filterOutAllExcept("id", "author", "title"));
+                        SimpleBeanPropertyFilter.filterOutAllExcept("author", "title"));
         new ObjectMapper().setFilterProvider(filterProvider);
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(checkouts);
+        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(object);
         mappingJacksonValue.setFilters(filterProvider);
         return mappingJacksonValue;
     }
@@ -75,15 +82,18 @@ public class CheckoutController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @Operation(summary = "Borrow a book by authenticated user",
             security = {@SecurityRequirement(name = "basicScheme")})
-    @Parameter(name = "id", description = "If User has more than " + MAX_VIOLATIONS +
-            " no more borrowing possible")
+    @Parameter(name = "id", description = "Id of the Book to checkout. If User has more than " + MAX_VIOLATIONS +
+            " borrowed books, no more checkouts possible")
     @Transactional
     public ResponseEntity<MappingJacksonValue> create(@RequestParam int id,
                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
         log.info("create()");
         User user = userDetails.getUser();
-        if (user.getViolations() + checkViolationsInPendingCheckouts(user) > MAX_VIOLATIONS) {
+        if (user.getViolations() + checkFutureViolationsInActiveCheckouts(user) > MAX_VIOLATIONS) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, BORROWING_PROHIBITED);
+        }
+        if (checkoutRepository.findAllActiveByUser(user).size() > MAX_BOOKS_ALLOWED_AT_ONCE) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, BORROWING_PROHIBITED_LIMIT_REACHED);
         }
         Book book = bookRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, NO_BOOK_FOUND));
@@ -94,12 +104,12 @@ public class CheckoutController {
                 new Checkout(null, user, book, LocalDateTime.now(), null));
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}").buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(getFilteredCheckoutsJson(List.of(created)));
+        return ResponseEntity.created(uriOfNewResource).body(getFilteredCheckoutsJson(created));
     }
 
-    public int checkViolationsInPendingCheckouts(User user) {
+    public int checkFutureViolationsInActiveCheckouts(User user) {
         int count = 0;
-        List<Checkout> currentCheckouts = checkoutRepository.findAllByUser(user);
+        List<Checkout> currentCheckouts = checkoutRepository.findAllActiveByUser(user);
         if (!currentCheckouts.isEmpty()) {
             for (Checkout ch : currentCheckouts) {
                 count += Duration.between(ch.getCheckoutDateTime(), LocalDateTime.now()).toDays() >
@@ -108,32 +118,27 @@ public class CheckoutController {
         }
         return count;
     }
-/*
+
     @PutMapping
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @Operation(summary = "Return (checkin) the Book", security = {@SecurityRequirement(name = "basicScheme")})
-    @Parameter(name = "bookId", description = "Book Id")
+    @Operation(summary = "Return (checkin) the book by authenticated User", security = {@SecurityRequirement(name = "basicScheme")})
+    @Parameter(name = "id", description = "Checkout Id")
     @Transactional
-    public void checkin(@RequestParam int bookId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public void checkin(@RequestParam int id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         log.info("checkin()");
-        Checkout checkout = checkoutRepository.findByBookId(bookId);
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, NO_VOTE_FOUND));
-//        Book menu = menuRepository.findByDateAndRestaurantId(LocalDate.now(), restaurantId)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-//                        NO_MENU_RESTAURANT_FOUND));
-//        vote.setMenu(menu);
+        Checkout checkout = checkoutRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, NO_CHECKOUT_FOUND));
+        if (!checkout.getUser().equals(userDetails.getUser())) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, CHECKOUT_OF_ANOTHER_USER);
+        }
+        if (Duration.between(checkout.getCheckoutDateTime(), LocalDateTime.now()).toDays() >
+                MAX_BORROW_DURATION_IN_DAYS) {
+            User user = userService.getById(userDetails.getUser().getId()).orElseThrow();
+            userService.updateViolations(user.getId(), user.getViolations() + 1);
+        }
+        Book book = bookRepository.findById(checkout.getBook().getId()).orElseThrow();
+        book.setAmount(book.getAmount() + 1);
+        bookRepository.save(book);
         checkoutRepository.save(checkout);
     }
-
-    @DeleteMapping
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @Operation(summary = "Delete authenticated user's vote", security = {@SecurityRequirement(name = "basicScheme")})
-    @Transactional
-    public void delete(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        log.info("delete");
-        throwExceptionIfLateToVote();
-        Checkout vote = voteRepository.findByDateAndUser(LocalDate.now(), userDetails.getUser())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, NO_VOTE_FOUND));
-        voteRepository.delete(vote);
-    } */
 }

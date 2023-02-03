@@ -1,6 +1,7 @@
 package com.pafolder.cbr.model;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -37,9 +38,11 @@ public class Checkout {
 
     @Column(name = "checkout_date_time", columnDefinition = "timestamp default now()")
     @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime checkoutDateTime;
 
     @Column(name = "checkin_date_time", columnDefinition = "timestamp default now()", nullable = true)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime checkinDateTime;
 
     @Override

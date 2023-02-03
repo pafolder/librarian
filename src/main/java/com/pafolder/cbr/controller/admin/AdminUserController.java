@@ -46,7 +46,7 @@ public class AdminUserController {
     }
 
     @PatchMapping("/{id}/violations")
-    @Operation(summary = "Update user's violation count", security = {@SecurityRequirement(name = "basicScheme")})
+    @Operation(summary = "Update user's violations count", security = {@SecurityRequirement(name = "basicScheme")})
     @Parameter(name = "id", description = "User's Id to be processed")
     public void updateViolations(@PathVariable int id, @RequestParam int violations) {
         log.info("updateViolations()");

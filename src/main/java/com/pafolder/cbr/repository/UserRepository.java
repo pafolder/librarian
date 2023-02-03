@@ -23,12 +23,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByEmail(String email);
 
     @Transactional
-    @Query("UPDATE User u SET u.enabled=:isEnabled WHERE u.id=:id")
+    @Query("UPDATE User u SET u.enabled = :isEnabled WHERE u.id = :id")
     @Modifying
     void updateIsEnabled(@Parameter int id, @Parameter boolean isEnabled);
 
     @Transactional
-    @Query("UPDATE User u SET u.violations=:violations WHERE u.id=:id")
+    @Query("UPDATE User u SET u.violations = :violations WHERE u.id = :id")
     @Modifying
     void updateViolations(@Parameter int id, @Parameter int violations);
 }

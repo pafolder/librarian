@@ -1,5 +1,6 @@
 package com.pafolder.cbr.exception;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
@@ -26,9 +27,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final MessageSource messageSource;
 
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers, HttpStatusCode status,
-                                                                  WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         ProblemDetail body = ex.updateAndGetBody(this.messageSource, LocaleContextHolder.getLocale());
         Map<String, String> invalidParams = new LinkedHashMap<>();
         for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
@@ -36,10 +36,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                     error.getArguments(), error.getDefaultMessage(), LocaleContextHolder.getLocale()));
         }
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            invalidParams.put(error.getField(),
-                    messageSource.getMessage(
-                            error.getCode(), error.getArguments(), error.getDefaultMessage(), LocaleContextHolder.getLocale())
-            );
+            invalidParams.put(error.getField(), messageSource.getMessage(
+                    error.getCode(), error.getArguments(), error.getDefaultMessage(), LocaleContextHolder.getLocale()));
         }
         body.setProperty("invalid_params", invalidParams);
         body.setStatus(HttpStatus.UNPROCESSABLE_ENTITY);
@@ -48,9 +46,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<?> handleResponseStatusException(ResponseStatusException ex, WebRequest request) {
-        return handleExceptionInternal(ex, createProblemDetail(ex, ex.getStatusCode(), ex.getReason(),
-                        null, null, request),
-                new HttpHeaders(), ex.getStatusCode(), request);
+        return handleExceptionInternal(ex, createProblemDetail(ex, ex.getStatusCode(), ex.getReason(), null,
+                null, request), new HttpHeaders(), ex.getStatusCode(), request);
     }
 
     @ExceptionHandler(DataAccessException.class)
@@ -61,15 +58,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class})
-    public ResponseEntity<Object> handleDataIntegrityViolation(
-            DataIntegrityViolationException ex, WebRequest request) {
+    public ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex, WebRequest request) {
         List<String> errors = new ArrayList<>();
         errors.add(/*ex.getCause() + " : " + */ex.getMessage());
-        ApiError apiError =
-                new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, ex.getLocalizedMessage(), errors);
-        return new ResponseEntity<>(
-                apiError, new HttpHeaders(), apiError.getStatus());
-
+        ApiError apiError = new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, ex.getLocalizedMessage(), errors);
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
@@ -80,10 +73,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             errors.add(violation.getRootBeanClass().getName() + " " +
                     violation.getPropertyPath() + ": " + violation.getMessage());
         }
-        ApiError apiError =
-                new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, ex.getLocalizedMessage(), errors);
-        return new ResponseEntity<>(
-                apiError, new HttpHeaders(), apiError.getStatus());
+        ApiError apiError = new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, ex.getLocalizedMessage(), errors);
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @Getter

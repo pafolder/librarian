@@ -12,6 +12,6 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface CheckoutRepository extends JpaRepository<Checkout, Integer> {
     @EntityGraph(attributePaths = {"user", "book"})
-    @Query("SELECT c FROM Checkout c WHERE :user=c.user AND c.checkinDateTime=NULL")
-    List<Checkout> findAllByUser(User user);
+    @Query("SELECT c FROM Checkout c WHERE :user = c.user AND c.checkinDateTime = NULL")
+    List<Checkout> findAllActiveByUser(User user);
 }
