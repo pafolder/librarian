@@ -47,16 +47,7 @@ public class BookController {
         return getFilteredBooksJson(books);
     }
 
-    @GetMapping()
-    @Operation(summary = "Get books with Ids between fromId and toId", security = {@SecurityRequirement(name = "basicScheme")})
-    public MappingJacksonValue getAllFromIdToId(
-            @RequestParam(defaultValue = "1") int fromId, @RequestParam @Nullable Integer toId) {
-        log.info("getAllFromIdToId()");
-        return getFilteredBooksJson(
-                bookRepository.findAllFromIdToId(fromId, Optional.ofNullable(toId).orElse(0)));
-    }
-
-    private <T> MappingJacksonValue getFilteredBooksJson(T object) {
+    public static <T> MappingJacksonValue getFilteredBooksJson(T object) {
         SimpleFilterProvider filterProvider = new SimpleFilterProvider()
                 .addFilter("bookJsonFilter",
                         SimpleBeanPropertyFilter.filterOutAllExcept(

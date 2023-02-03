@@ -88,7 +88,7 @@ public class CheckoutController {
         if (getFutureViolations(user, checkoutRepository) > MAX_VIOLATIONS) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, BORROWING_PROHIBITED);
         }
-        if (checkoutRepository.findAllActiveByUserId(user.getId()).size() > MAX_BOOKS_ALLOWED_AT_ONCE) {
+        if (checkoutRepository.findAllActiveByUserId(user.getId()).size() >= MAX_BOOKS_ALLOWED_AT_ONCE) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, BORROWING_PROHIBITED_LIMIT_REACHED);
         }
         Book book = bookRepository.findById(id).orElseThrow(

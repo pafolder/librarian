@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -15,14 +16,17 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Optional;
 
 import static com.pafolder.librarian.controller.admin.AdminBookController.REST_URL;
+import static com.pafolder.librarian.controller.profile.BookController.getFilteredBooksJson;
 
 @RestController
 @AllArgsConstructor
@@ -34,6 +38,15 @@ public class AdminBookController {
     private static final String NO_BOOK_FOR_DELETION_FOUND = "No book for deletion found";
     private final Logger log = LoggerFactory.getLogger(getClass());
     private BookRepository bookRepository;
+
+    @GetMapping()
+    @Operation(summary = "Get books with Ids between fromId and toId", security = {@SecurityRequirement(name = "basicScheme")})
+    public MappingJacksonValue getAllFromIdToId(
+            @RequestParam(defaultValue = "1") int fromId, @RequestParam @Nullable Integer toId) {
+        log.info("getAllFromIdToId()");
+        return getFilteredBooksJson(
+                bookRepository.findAllFromIdToId(fromId, Optional.ofNullable(toId).orElse(0)));
+    }
 
     @PostMapping
     @CacheEvict(cacheNames = {"books"}, allEntries = true)
