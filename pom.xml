@@ -9,10 +9,10 @@
         <relativePath/>
     </parent>
     <groupId>com.pafolder</groupId>
-    <artifactId>cbr</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>librarian</artifactId>
+    <version>0.9.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>graduation</name>
+    <name>librarian</name>
     <description>Test task</description>
     <properties>
         <java.version>19</java.version>
