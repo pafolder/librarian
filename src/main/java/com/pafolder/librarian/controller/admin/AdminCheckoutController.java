@@ -19,10 +19,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.pafolder.librarian.controller.admin.AdminCheckoutController.REST_URL;
-import static com.pafolder.librarian.controller.profile.CheckoutController.getFilteredCheckoutsJson;
+import static com.pafolder.librarian.controller.profile.CheckoutController.getFutureViolations;
+import static com.pafolder.librarian.util.JsonFilter.getFilteredCheckoutsJson;
 
 @RestController
 @AllArgsConstructor
@@ -37,14 +39,18 @@ public class AdminCheckoutController {
     @GetMapping()
     @Operation(summary = "Get active or all checkouts with Ids between fromId and toId",
             security = {@SecurityRequirement(name = "basicScheme")})
-    @Parameter(name = "isActive", description = "true - for active checkouts (no checkin yet)")
+    @Parameter(name = "isActive", description = "True - for getting only active checkouts")
+    @Parameter(name = "fromId", description = "From Id")
+    @Parameter(name = "toId", description = "To Id")
     public MappingJacksonValue getAllFromIdToId(
             @RequestParam(defaultValue = "1") int fromId, @RequestParam @Nullable Integer toId,
             @RequestParam(defaultValue = "true") boolean isActive) {
         log.info("getAllFromIdToId()");
-        return getFilteredCheckoutsJson(isActive ?
+        List<Checkout> checkouts = isActive ?
                 checkoutRepository.findAllActiveFromIdToId(fromId, Optional.ofNullable(toId).orElse(0)) :
-                checkoutRepository.findAllFromIdToId(fromId, Optional.ofNullable(toId).orElse(0)));
+                checkoutRepository.findAllFromIdToId(fromId, Optional.ofNullable(toId).orElse(0));
+        checkouts.forEach(ch -> ch.getUser().setViolations(getFutureViolations(ch.getUser(), checkoutRepository)));
+        return getFilteredCheckoutsJson(true, checkouts);
     }
 
     @DeleteMapping("/{id}")

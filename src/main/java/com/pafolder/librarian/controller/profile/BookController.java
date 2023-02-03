@@ -1,8 +1,5 @@
 package com.pafolder.librarian.controller.profile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.pafolder.librarian.model.Book;
 import com.pafolder.librarian.repository.BookRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.pafolder.librarian.util.JsonFilter.getFilteredBooksJson;
 
 @RestController
 @AllArgsConstructor
@@ -45,16 +44,5 @@ public class BookController {
             books.addAll(bookRepository.findAllBySubstringInTitle(text));
         }
         return getFilteredBooksJson(books);
-    }
-
-    public static <T> MappingJacksonValue getFilteredBooksJson(T object) {
-        SimpleFilterProvider filterProvider = new SimpleFilterProvider()
-                .addFilter("bookJsonFilter",
-                        SimpleBeanPropertyFilter.filterOutAllExcept(
-                                "id", "author", "title", "location", "amount"));
-        new ObjectMapper().setFilterProvider(filterProvider);
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(object);
-        mappingJacksonValue.setFilters(filterProvider);
-        return mappingJacksonValue;
     }
 }

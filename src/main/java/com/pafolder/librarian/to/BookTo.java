@@ -1,21 +1,18 @@
 package com.pafolder.librarian.to;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class BookTo {
-    @NotBlank
+    @Nullable
     private String author;
-    @NotBlank
+    @Nullable
     private String title;
-    @NotBlank
+    @Nullable
     private String location;
-    @Min(0)
-    @Max(1)
-    private int amount = 1;
+    @Nullable
+    private Integer amount;
 }

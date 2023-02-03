@@ -26,7 +26,7 @@ import java.net.URI;
 import java.util.Optional;
 
 import static com.pafolder.librarian.controller.admin.AdminBookController.REST_URL;
-import static com.pafolder.librarian.controller.profile.BookController.getFilteredBooksJson;
+import static com.pafolder.librarian.util.JsonFilter.getFilteredBooksJson;
 
 @RestController
 @AllArgsConstructor
@@ -40,12 +40,15 @@ public class AdminBookController {
     private BookRepository bookRepository;
 
     @GetMapping()
-    @Operation(summary = "Get books with Ids between fromId and toId", security = {@SecurityRequirement(name = "basicScheme")})
+    @Operation(summary = "Get books with Ids between fromId and toId",
+            security = {@SecurityRequirement(name = "basicScheme")})
+    @Parameter(name = "fromId", description = "From Id")
+    @Parameter(name = "toId", description = "To Id")
     public MappingJacksonValue getAllFromIdToId(
             @RequestParam(defaultValue = "1") int fromId, @RequestParam @Nullable Integer toId) {
         log.info("getAllFromIdToId()");
-        return getFilteredBooksJson(
-                bookRepository.findAllFromIdToId(fromId, Optional.ofNullable(toId).orElse(0)));
+        return getFilteredBooksJson(bookRepository
+                .findAllFromIdToId(fromId, Optional.ofNullable(toId).orElse(0)));
     }
 
     @PostMapping
@@ -55,7 +58,7 @@ public class AdminBookController {
     @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Provide Book data")
     @Transactional
     public ResponseEntity<Book> create(@Valid @RequestBody BookTo bookTo) {
-        log.info("createBook()");
+        log.info("create()");
         Book created = bookRepository.save(new Book(null, bookTo.getAuthor(), bookTo.getTitle(),
                 bookTo.getLocation(), bookTo.getAmount()));
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -73,10 +76,10 @@ public class AdminBookController {
         log.info("update()");
         Book existing = bookRepository.findById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, NO_BOOK_FOR_UPDATE_FOUND));
-        existing.setAuthor(bookTo.getAuthor());
-        existing.setTitle(bookTo.getTitle());
-        existing.setLocation(bookTo.getLocation());
-        existing.setAmount(bookTo.getAmount());
+        Optional.ofNullable(bookTo.getAuthor()).ifPresent(existing::setAuthor);
+        Optional.ofNullable(bookTo.getTitle()).ifPresent(existing::setTitle);
+        Optional.ofNullable(bookTo.getLocation()).ifPresent(existing::setLocation);
+        Optional.ofNullable(bookTo.getAmount()).ifPresent(existing::setAmount);
         bookRepository.save(existing);
     }
 

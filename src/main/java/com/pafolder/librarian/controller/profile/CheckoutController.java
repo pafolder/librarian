@@ -1,8 +1,5 @@
 package com.pafolder.librarian.controller.profile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
-import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.pafolder.librarian.model.Book;
 import com.pafolder.librarian.model.Checkout;
 import com.pafolder.librarian.model.User;
@@ -34,6 +31,7 @@ import java.util.List;
 
 import static com.pafolder.librarian.controller.admin.AdminCheckoutController.NO_CHECKOUT_FOUND;
 import static com.pafolder.librarian.controller.profile.BookController.NO_BOOK_FOUND;
+import static com.pafolder.librarian.util.JsonFilter.getFilteredCheckoutsJson;
 
 @RestController
 @AllArgsConstructor
@@ -55,23 +53,12 @@ public class CheckoutController {
     private UserServiceImpl userService;
 
     @GetMapping
-    @Operation(summary = "Get authenticated User's borrowed books", security = {@SecurityRequirement(name = "basicScheme")})
+    @Operation(summary = "Get authenticated User's borrowed books",
+            security = {@SecurityRequirement(name = "basicScheme")})
     public MappingJacksonValue get(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         log.info("get()");
         List<Checkout> checkouts = checkoutRepository.findAllActiveByUserId(userDetails.getUser().getId());
-        return getFilteredCheckoutsJson(checkouts);
-    }
-
-    public static <T> MappingJacksonValue getFilteredCheckoutsJson(T object) {
-        SimpleFilterProvider filterProvider = new SimpleFilterProvider()
-                .addFilter("checkoutJsonFilter",
-                        SimpleBeanPropertyFilter.filterOutAllExcept("id", "checkoutDateTime", "book"))
-                .addFilter("bookJsonFilter",
-                        SimpleBeanPropertyFilter.filterOutAllExcept("author", "title"));
-        new ObjectMapper().setFilterProvider(filterProvider);
-        MappingJacksonValue mappingJacksonValue = new MappingJacksonValue(object);
-        mappingJacksonValue.setFilters(filterProvider);
-        return mappingJacksonValue;
+        return getFilteredCheckoutsJson(false, checkouts);
     }
 
     @PostMapping
@@ -96,11 +83,13 @@ public class CheckoutController {
         if (book.getAmount() == 0) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, BOOK_IS_ALREADY_BORROWED);
         }
+        book.setAmount(book.getAmount() - 1);
+        bookRepository.updateAmount(book.getId(), book.getAmount());
         Checkout created = checkoutRepository.save(
                 new Checkout(null, user, book, LocalDateTime.now(), null));
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}").buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(getFilteredCheckoutsJson(created));
+        return ResponseEntity.created(uriOfNewResource).body(getFilteredCheckoutsJson(false, created));
     }
 
     public static int getFutureViolations(User user, CheckoutRepository checkoutRepository) {

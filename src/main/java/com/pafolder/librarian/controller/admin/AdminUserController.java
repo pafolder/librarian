@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.pafolder.librarian.controller.admin.AdminUserController.REST_URL;
-import static com.pafolder.librarian.controller.profile.CheckoutController.getFilteredCheckoutsJson;
 import static com.pafolder.librarian.controller.profile.CheckoutController.getFutureViolations;
+import static com.pafolder.librarian.util.JsonFilter.getFilteredCheckoutsJson;
 
 @RestController
 @AllArgsConstructor
@@ -38,6 +38,8 @@ public class AdminUserController {
 
     @GetMapping
     @Operation(summary = "Get all users with Ids between fromId and toId", security = {@SecurityRequirement(name = "basicScheme")})
+    @Parameter(name = "fromId", description = "From Id")
+    @Parameter(name = "toId", description = "To Id")
     public List<User> getAllFromIdToId(@RequestParam(defaultValue = "1") int fromId, @RequestParam @Nullable Integer toId) {
         log.info("getAllFromIdToId()");
         List<User> users = userService.getAllFromIdToId(fromId, Optional.ofNullable(toId).orElse(0));
@@ -81,7 +83,7 @@ public class AdminUserController {
                                                          @RequestParam @Nullable Integer toId,
                                                          @RequestParam(defaultValue = "true") boolean isActive) {
         log.info("getAllCheckoutsFromIdToId()");
-        return getFilteredCheckoutsJson(isActive ?
+        return getFilteredCheckoutsJson(true, isActive ?
                 checkoutRepository.findAllActiveByUserIdFromIdToId(id, fromId, Optional.ofNullable(toId)
                         .orElse(0)) :
                 checkoutRepository.findAllByUserIdFromIdToId(id, fromId, Optional.ofNullable(toId).orElse(0)));
