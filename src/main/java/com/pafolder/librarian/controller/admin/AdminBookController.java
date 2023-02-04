@@ -26,7 +26,7 @@ import java.net.URI;
 import java.util.Optional;
 
 import static com.pafolder.librarian.controller.admin.AdminBookController.REST_URL;
-import static com.pafolder.librarian.util.JsonFilter.getFilteredBooksJson;
+import static com.pafolder.librarian.util.ControllerUtil.getFilteredBooksJson;
 
 @RestController
 @AllArgsConstructor
@@ -35,7 +35,7 @@ import static com.pafolder.librarian.util.JsonFilter.getFilteredBooksJson;
 public class AdminBookController {
     public static final String REST_URL = "/api/admin/books";
     public static final String NO_BOOK_FOR_UPDATE_FOUND = "No book for update found";
-    private static final String NO_BOOK_FOR_DELETION_FOUND = "No book for deletion found";
+    static final String NO_BOOK_FOR_DELETION_FOUND = "No book for deletion found";
     private final Logger log = LoggerFactory.getLogger(getClass());
     private BookRepository bookRepository;
 
@@ -57,13 +57,13 @@ public class AdminBookController {
     @Operation(summary = "Create a new Book", security = {@SecurityRequirement(name = "basicScheme")})
     @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Provide Book data")
     @Transactional
-    public ResponseEntity<Book> create(@Valid @RequestBody BookTo bookTo) {
+    public ResponseEntity<MappingJacksonValue> create(@Valid @RequestBody BookTo bookTo) {
         log.info("create()");
         Book created = bookRepository.save(new Book(null, bookTo.getAuthor(), bookTo.getTitle(),
                 bookTo.getLocation(), bookTo.getAmount()));
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}").buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(created);
+        return ResponseEntity.created(uriOfNewResource).body(getFilteredBooksJson(created));
     }
 
     @PutMapping("/{id}")

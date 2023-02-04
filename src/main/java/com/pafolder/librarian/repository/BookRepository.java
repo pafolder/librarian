@@ -17,7 +17,7 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
     @Query("SELECT b FROM Book b WHERE b.author = :author")
     List<Book> findAllByAuthor(String author);
 
-    @Query("SELECT b FROM Book b WHERE b.title ILIKE '%' + :substring + '%'")
+    @Query("SELECT b FROM Book b WHERE b.title ILIKE '%%' + :substring + '%%'")
     List<Book> findAllBySubstringInTitle(String substring);
 
     @Cacheable(value = "books")

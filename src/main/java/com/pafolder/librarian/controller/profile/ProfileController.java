@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import static com.pafolder.librarian.controller.profile.CheckoutController.getFutureViolations;
+import static com.pafolder.librarian.util.ControllerUtil.getFutureViolations;
 
 @RestController
 @AllArgsConstructor

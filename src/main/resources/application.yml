@@ -1,5 +1,5 @@
 cbr:
-  version: 0.91
+  version: 0.92
 spring:
   datasource:
     username: sa
@@ -37,4 +37,4 @@ springdoc:
     tagsSorter: alpha
 logging:
   level:
-    ROOT: warn
+    ROOT: debug

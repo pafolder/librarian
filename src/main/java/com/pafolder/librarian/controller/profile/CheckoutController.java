@@ -31,7 +31,7 @@ import java.util.List;
 
 import static com.pafolder.librarian.controller.admin.AdminCheckoutController.NO_CHECKOUT_FOUND;
 import static com.pafolder.librarian.controller.profile.BookController.NO_BOOK_FOUND;
-import static com.pafolder.librarian.util.JsonFilter.getFilteredCheckoutsJson;
+import static com.pafolder.librarian.util.ControllerUtil.*;
 
 @RestController
 @AllArgsConstructor
@@ -42,11 +42,11 @@ public class CheckoutController {
     public static final String BOOK_IS_ALREADY_BORROWED = "Book is already borrowed by another user";
     public static final String BORROWING_PROHIBITED = "Borrowing is prohibited because the violation limit exceeded";
     public static final String CHECKOUT_OF_ANOTHER_USER = "Checkout of another user";
+    public static final int MAX_VIOLATIONS = 1;
     public static final int MAX_BOOKS_ALLOWED_AT_ONCE = 3;
+    public static final int MAX_BORROW_DURATION_IN_DAYS = 14;
     public static final String BORROWING_PROHIBITED_LIMIT_REACHED =
             "Borrowing is prohibited because the limit of " + MAX_BOOKS_ALLOWED_AT_ONCE + " books reached";
-    private static final int MAX_BORROW_DURATION_IN_DAYS = 14;
-    public static final int MAX_VIOLATIONS = 1;
     private final Logger log = LoggerFactory.getLogger(getClass());
     private BookRepository bookRepository;
     private CheckoutRepository checkoutRepository;
@@ -90,17 +90,6 @@ public class CheckoutController {
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}").buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(getFilteredCheckoutsJson(false, created));
-    }
-
-    public static int getFutureViolations(User user, CheckoutRepository checkoutRepository) {
-        int[] count = new int[]{user.getViolations()};
-        List<Checkout> currentCheckouts = checkoutRepository.findAllActiveByUserId(user.getId());
-        if (!currentCheckouts.isEmpty()) {
-            currentCheckouts.forEach(checkout ->
-                    count[0] += Duration.between(checkout.getCheckoutDateTime(), LocalDateTime.now()).toDays() >
-                            MAX_BORROW_DURATION_IN_DAYS ? 1 : 0);
-        }
-        return count[0];
     }
 
     @PutMapping

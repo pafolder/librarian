@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.pafolder.librarian.controller.admin.AdminUserController.REST_URL;
-import static com.pafolder.librarian.controller.profile.CheckoutController.getFutureViolations;
-import static com.pafolder.librarian.util.JsonFilter.getFilteredCheckoutsJson;
+import static com.pafolder.librarian.util.ControllerUtil.getFilteredCheckoutsJson;
+import static com.pafolder.librarian.util.ControllerUtil.getFutureViolations;
 
 @RestController
 @AllArgsConstructor

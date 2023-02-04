@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.pafolder.librarian.util.JsonFilter.getFilteredBooksJson;
+import static com.pafolder.librarian.util.ControllerUtil.getFilteredBooksJson;
 
 @RestController
 @AllArgsConstructor
