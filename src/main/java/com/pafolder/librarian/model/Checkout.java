@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonFilter("checkoutJsonFilter")
@@ -36,12 +35,12 @@ public class Checkout {
     @NotNull
     private Book book;
 
-    @Column(name = "checkout_date_time", columnDefinition = "timestamp default now()")
+    @Column(name = "checkout_date_time", columnDefinition = "timestamp default now()", nullable = false)
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime checkoutDateTime;
 
-    @Column(name = "checkin_date_time", columnDefinition = "timestamp default now()", nullable = true)
+    @Column(name = "checkin_date_time", columnDefinition = "timestamp default now()")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime checkinDateTime;
 
@@ -53,7 +52,7 @@ public class Checkout {
         if (o == null || !getClass().equals(ProxyUtils.getUserClass(o))) {
             return false;
         }
-        return id != null;
+        return id != null && id == ((Checkout) o).id;
     }
 
     @Override

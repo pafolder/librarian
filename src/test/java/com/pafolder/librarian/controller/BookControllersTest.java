@@ -1,6 +1,7 @@
-package com.pafolder.librarian.controller.admin;
+package com.pafolder.librarian.controller;
 
 import com.pafolder.librarian.MatcherFactory;
+import com.pafolder.librarian.controller.admin.AdminBookController;
 import com.pafolder.librarian.controller.profile.BookController;
 import com.pafolder.librarian.model.Book;
 import org.junit.jupiter.api.Assertions;
@@ -18,7 +19,7 @@ import static com.pafolder.librarian.controller.admin.AdminBookController.NO_BOO
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class BookControllersTest extends AbstractTestController {
+class BookControllersTest extends BaseTestController {
     public static final MatcherFactory.Matcher<Book> BOOK_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(
             Book.class, "amount");
 
@@ -51,6 +52,7 @@ class BookControllersTest extends AbstractTestController {
                                 "\"location\": \"Created Shelf\",\"amount\": 1}"))
                 .andDo(print())
                 .andExpect(status().isCreated());
+        Assertions.assertFalse(bookRepository.findAllByAuthor("Created Author").isEmpty());
     }
 
     @Test
@@ -130,7 +132,7 @@ class BookControllersTest extends AbstractTestController {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        Assertions.assertTrue(bookRepository.findById(Integer.valueOf(BOOK_ID_TO_DELETE)).isEmpty());
+        Assertions.assertTrue(bookRepository.findById(BOOK_ID_TO_DELETE).isEmpty());
     }
 
     @Test

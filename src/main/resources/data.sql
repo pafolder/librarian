@@ -5,7 +5,7 @@ VALUES ('First Author', 'First Book', 'Shelf 1', 0),
        ('Fourth Author', 'Fourth Book', 'Shelf 4', 0),
        ('Fifth Author', 'Fifth Book', 'Shelf 5', 1),
        ('Sixth Author', 'Sixth Book', 'Shelf 6', 1),
-       ('Seventh Author', 'Sevens Book', 'Shelf 7', 0),
+       ('Seventh Author', 'Seventh Book', 'Shelf 7', 0),
        ('Eighth Author', 'Eighth Book', 'Shelf 8', 0);
 
 INSERT INTO users (name, email, password, role)
