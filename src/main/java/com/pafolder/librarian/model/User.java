@@ -53,7 +53,7 @@ public class User {
         if (o == null || !getClass().equals(ProxyUtils.getUserClass(o))) {
             return false;
         }
-        return id != null;
+        return id != null && id == ((User) o).id;
     }
 
     @Override

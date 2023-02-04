@@ -49,7 +49,7 @@ public class Book {
         if (o == null || !getClass().equals(ProxyUtils.getUserClass(o))) {
             return false;
         }
-        return id != null;
+        return id != null && id == ((Book) o).id;
     }
 
     @Override
