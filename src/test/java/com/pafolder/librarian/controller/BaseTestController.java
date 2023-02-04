@@ -1,4 +1,4 @@
-package com.pafolder.librarian.controller.admin;
+package com.pafolder.librarian.controller;
 
 import com.pafolder.librarian.repository.BookRepository;
 import com.pafolder.librarian.repository.CheckoutRepository;
@@ -20,7 +20,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-public abstract class AbstractTestController {
+public abstract class BaseTestController {
     protected static final Locale RU_LOCALE = new Locale("ru");
 
     protected static final CharacterEncodingFilter CHARACTER_ENCODING_FILTER = new CharacterEncodingFilter();
@@ -36,7 +36,9 @@ public abstract class AbstractTestController {
     private WebApplicationContext webApplicationContext;
     @Autowired
     BookRepository bookRepository;
+    @Autowired
     UserServiceImpl userService;
+    @Autowired
     CheckoutRepository checkoutRepository;
 
     @PostConstruct

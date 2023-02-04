@@ -35,7 +35,7 @@ import static com.pafolder.librarian.util.ControllerUtil.getFilteredBooksJson;
 public class AdminBookController {
     public static final String REST_URL = "/api/admin/books";
     public static final String NO_BOOK_FOR_UPDATE_FOUND = "No book for update found";
-    static final String NO_BOOK_FOR_DELETION_FOUND = "No book for deletion found";
+    public static final String NO_BOOK_FOR_DELETION_FOUND = "No book for deletion found";
     private final Logger log = LoggerFactory.getLogger(getClass());
     private BookRepository bookRepository;
 

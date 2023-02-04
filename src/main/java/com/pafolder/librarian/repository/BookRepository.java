@@ -14,16 +14,16 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface BookRepository extends JpaRepository<Book, Integer> {
     @Cacheable(value = "books")
-    @Query("SELECT b FROM Book b WHERE b.author = :author")
-    List<Book> findAllByAuthor(String author);
-
-    @Query("SELECT b FROM Book b WHERE b.title ILIKE '%%' + :substring + '%%'")
-    List<Book> findAllBySubstringInTitle(String substring);
-
-    @Cacheable(value = "books")
     Optional<Book> findById(int id);
 
-    @Query("SELECT b FROM Book b WHERE b.id BETWEEN :fromId AND :toId")
+    @Cacheable(value = "books")
+    @Query("SELECT b FROM Book b WHERE b.author = :author ORDER BY b.author, b.title")
+    List<Book> findAllByAuthor(String author);
+
+    @Query("SELECT b FROM Book b WHERE b.title ILIKE '%%' + :substring + '%%' ORDER BY b.author, b.title")
+    List<Book> findAllBySubstringInTitle(String substring);
+
+    @Query("SELECT b FROM Book b WHERE b.id BETWEEN :fromId AND :toId ORDER BY b.id")
     List<Book> findAllFromIdToId(int fromId, int toId);
 
     @Transactional

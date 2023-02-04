@@ -17,7 +17,7 @@ import java.util.Optional;
 @Component
 @AllArgsConstructor
 public class UserToValidator implements Validator {
-    static final String DUPLICATING_EMAIL = "Email is already used by another user";
+    public static final String DUPLICATING_EMAIL = "Email is already used by another user";
     private final UserRepository userRepository;
     private final HttpServletRequest request;
 
