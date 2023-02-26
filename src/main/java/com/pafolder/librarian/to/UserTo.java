@@ -9,39 +9,40 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UserTo {
-    @NotBlank
-    public String name;
 
-    @Email
-    @NotBlank
-    @Size(max = 128)
-    String email;
+  @NotBlank
+  public String name;
 
-    @NotBlank
-    @Size(min = 5, max = 32)
-    String password;
+  @Email
+  @NotBlank
+  @Size(max = 128)
+  String email;
 
-    public String getEmail() {
-        return email;
-    }
+  @NotBlank
+  @Size(min = 5, max = 32)
+  String password;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
 }
