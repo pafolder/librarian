@@ -56,7 +56,7 @@ public class AdminBookController {
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new Book", security = {@SecurityRequirement(name = "basicScheme")})
     @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Provide Book data")
-    @Transactional
+/*    @Transactional*/
     public ResponseEntity<MappingJacksonValue> create(@Valid @RequestBody BookTo bookTo) {
         log.info("create()");
         Book created = bookRepository.save(new Book(null, bookTo.getAuthor(), bookTo.getTitle(),
@@ -71,7 +71,7 @@ public class AdminBookController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @Operation(summary = "Update Book", security = {@SecurityRequirement(name = "basicScheme")})
     @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Provide updated Book data")
-    @Transactional
+/*    @Transactional*/
     public void update(@PathVariable int id, @Valid @RequestBody BookTo bookTo) {
         log.info("update()");
         Book existing = bookRepository.findById(id).orElseThrow(() ->
@@ -88,7 +88,7 @@ public class AdminBookController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete Book", security = {@SecurityRequirement(name = "basicScheme")})
     @Parameter(name = "id", description = "Book Id to delete")
-    @Transactional
+/*    @Transactional*/
     public void delete(@PathVariable int id) {
         log.info("delete()");
         bookRepository.findById(id).orElseThrow(() ->

@@ -56,7 +56,7 @@ public class ProfileController {
     @Operation(summary = "Update authenticated User's credentials",
             security = {@SecurityRequirement(name = "basicScheme")})
     @Parameter(name = "userTo", description = "Updated user's credentials")
-    @Transactional
+/*    @Transactional*/
     public void updateAuth(@Valid @RequestBody UserTo userTo, @AuthenticationPrincipal UserDetailsImpl authUser,
                            HttpServletRequest request) throws ServletException {
         log.info("updateAuth()");

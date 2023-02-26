@@ -67,7 +67,7 @@ public class CheckoutController {
             security = {@SecurityRequirement(name = "basicScheme")})
     @Parameter(name = "id", description = "Id of the Book to checkout. If User has more than " + MAX_VIOLATIONS +
             " borrowed books, no more checkouts possible")
-    @Transactional
+/*    @Transactional*/
     public ResponseEntity<MappingJacksonValue> create(@RequestParam int id,
                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
         log.info("create()");
