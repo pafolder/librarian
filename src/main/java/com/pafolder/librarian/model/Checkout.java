@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.util.ProxyUtils;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -36,7 +35,10 @@ public class Checkout {
   @NotNull
   private Book book;
 
-  @Column(name = "checkout_date_time", columnDefinition = "timestamp default now()", nullable = false)
+  @Column(
+      name = "checkout_date_time",
+      columnDefinition = "timestamp default now()",
+      nullable = false)
   @NotNull
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   private LocalDateTime checkoutDateTime;
@@ -60,5 +62,4 @@ public class Checkout {
   public int hashCode() {
     return id == null ? 0 : id;
   }
-
 }

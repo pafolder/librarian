@@ -4,11 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
-import lombok.experimental.UtilityClass;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class JsonUtil {
@@ -49,8 +48,7 @@ public class JsonUtil {
   }
 
   public static <T> String writeAdditionProps(T obj, Map<String, Object> addProps) {
-    Map<String, Object> map = mapper.convertValue(obj, new TypeReference<>() {
-    });
+    Map<String, Object> map = mapper.convertValue(obj, new TypeReference<>() {});
     map.putAll(addProps);
     return writeValue(map);
   }
