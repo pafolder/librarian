@@ -1,5 +1,8 @@
 package com.pafolder.librarian.configuration;
 
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
+
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,9 +20,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ProblemDetail;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
-
 @SuppressWarnings("checkstyle:MissingJavadocType")
 @Configuration
 @EnableCaching
@@ -27,34 +27,32 @@ public class ApplicationConfiguration {
 
   @SuppressWarnings("checkstyle:OperatorWrap")
   public static final String TEST_SUMMARY =
-      "The <b>LIBRARIAN</b> Application allows Users to borrow books from the Library. "
-          + "The main rules are:"
-          +
-          "<li> No more than 3 books can be borrowed by one User at a time." +
-          "</li><li> Each book cannot be borrowed for more than 14 days." +
-          "</li><li> If the User does not return the book on time, this counts as violation." +
-          " Users with 2 and more violations can no longer borrow books." +
-          "</li><li> Administrators can input books and manage Users as well as User's checkouts."
-          + "<br><br>"
-          +
-          "<b>Credentials for testing:</b><br>"
+      "The <b>LIBRARIAN</b> Application allows Users to borrow books from the Library. The main"
+          + " rules are:<li> No more than 3 books can be borrowed by one User at a time.</li><li>"
+          + " Each book cannot be borrowed for more than 14 days.</li><li> If the User does not"
+          + " return the book on time, this counts as violation. Users with 2 and more violations"
+          + " can no longer borrow books.</li><li> Administrators can input books and manage Users"
+          + " as well as User's checkouts.<br><br><b>Credentials for testing:</b><br>"
           + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-          +
-          "Admin:&nbsp;<i>admin@mail.com&nbsp;/&nbsp;admin</i><br>"
+          + "Admin:&nbsp;<i>admin@mail.com&nbsp;/&nbsp;admin</i><br>"
           + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-          +
-          "&nbsp;&nbsp;&nbsp;&nbsp;User:&nbsp;<i>user@mail.com&nbsp;/&nbsp;password</i></li>" +
-          "<br><div><a href=\"https://github.com/pafolder/cbr\">Application source files (GitHub)</a></div>";
+          + "&nbsp;&nbsp;&nbsp;&nbsp;User:&nbsp;<i>user@mail.com&nbsp;/&nbsp;password</i></li><br><div><a"
+          + " href=\"https://github.com/pafolder/cbr\">Application source files (GitHub)</a></div>";
 
   @SuppressWarnings({"checkstyle:AbbreviationAsWordInName", "checkstyle:MissingJavadocMethod"})
   @Bean
   public OpenAPI customOpenAPI(@Value("${cbr.version}") String appVersion) {
     return new OpenAPI()
-        .components(new Components().addSecuritySchemes("basicScheme",
-            new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic")))
-        .info(new Info().title("REST API Documentation for LIBRARIAN Application")
-            .version(appVersion)
-            .description(TEST_SUMMARY));
+        .components(
+            new Components()
+                .addSecuritySchemes(
+                    "basicScheme",
+                    new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic")))
+        .info(
+            new Info()
+                .title("REST API Documentation for LIBRARIAN Application")
+                .version(appVersion)
+                .description(TEST_SUMMARY));
   }
 
   @JsonAutoDetect(fieldVisibility = NONE, getterVisibility = ANY)

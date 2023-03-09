@@ -17,31 +17,43 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder passwordEncoder,
-                                                       UserServiceImpl userService) throws Exception {
-        userService.setPasswordEncoder(passwordEncoder);
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userService)
-                .passwordEncoder(passwordEncoder)
-                .and().build();
-    }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
+  @Bean
+  public AuthenticationManager authenticationManager(
+      HttpSecurity http, PasswordEncoder passwordEncoder, UserServiceImpl userService)
+      throws Exception {
+    userService.setPasswordEncoder(passwordEncoder);
+    return http.getSharedObject(AuthenticationManagerBuilder.class)
+        .userDetailsService(userService)
+        .passwordEncoder(passwordEncoder)
+        .and()
+        .build();
+  }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests()
-                .requestMatchers("/", "/v3/**", "/swagger-ui/**").permitAll()
-                .requestMatchers("/api/admin/**").hasRole(User.Role.ADMIN.name())
-                .requestMatchers(HttpMethod.POST, "/api/register").permitAll()
-                .requestMatchers("/api/**").authenticated()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().httpBasic()
-                .and().csrf().disable().build();
-    }
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+  }
 
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    return http.authorizeHttpRequests()
+        .requestMatchers("/", "/v3/**", "/swagger-ui/**")
+        .permitAll()
+        .requestMatchers("/api/admin/**")
+        .hasRole(User.Role.ADMIN.name())
+        .requestMatchers(HttpMethod.POST, "/api/register")
+        .permitAll()
+        .requestMatchers("/api/**")
+        .authenticated()
+        .and()
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
+        .httpBasic()
+        .and()
+        .csrf()
+        .disable()
+        .build();
+  }
 }

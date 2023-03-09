@@ -10,8 +10,7 @@ import lombok.Setter;
 @Setter
 public class UserTo {
 
-  @NotBlank
-  public String name;
+  @NotBlank public String name;
 
   @Email
   @NotBlank

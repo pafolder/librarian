@@ -13,8 +13,13 @@ import org.springframework.security.core.GrantedAuthority;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "users", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"email"}, name = "user_unique_email_idx")})
+@Table(
+    name = "users",
+    uniqueConstraints = {
+      @UniqueConstraint(
+          columnNames = {"email"},
+          name = "user_unique_email_idx")
+    })
 public class User {
 
   @Id
@@ -46,7 +51,6 @@ public class User {
 
   @Enumerated(EnumType.STRING)
   private Role role = Role.USER;
-
 
   @Override
   public boolean equals(Object o) {

@@ -15,8 +15,13 @@ import org.springframework.data.util.ProxyUtils;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonFilter("bookJsonFilter")
-@Table(name = "book", uniqueConstraints = {@UniqueConstraint(columnNames = {"title", "author"},
-    name = "book_unique_title_author_idx")})
+@Table(
+    name = "book",
+    uniqueConstraints = {
+      @UniqueConstraint(
+          columnNames = {"title", "author"},
+          name = "book_unique_title_author_idx")
+    })
 public class Book {
 
   @Id
