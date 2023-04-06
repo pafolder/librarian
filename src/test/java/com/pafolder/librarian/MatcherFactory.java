@@ -2,7 +2,7 @@ package com.pafolder.librarian;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.pafolder.librarian.util.JsonUtil;
+import com.pafolder.librarian.infrastructure.util.JsonUtil;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.function.BiConsumer;
