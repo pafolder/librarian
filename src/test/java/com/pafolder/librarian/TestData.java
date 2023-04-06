@@ -1,7 +1,7 @@
 package com.pafolder.librarian;
 
-import com.pafolder.librarian.model.Book;
-import com.pafolder.librarian.model.User;
+import com.pafolder.librarian.domain.model.Book;
+import com.pafolder.librarian.domain.model.User;
 
 public class TestData {
   private static final String DEFAULT_PASSWORD = "password";
