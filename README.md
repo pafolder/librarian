@@ -2,7 +2,7 @@ The LIBRARIAN Application
 =====================
 
 
-###  allows Users to borrow books from the Library
+###  Allows Users to borrow books from the Library
 The main rules are:
 - No more than 3 books can be borrowed by one User at a time.
 - Each book cannot be borrowed for more than 14 days.
