@@ -4,16 +4,14 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.pafolder.librarian.domain.model.Book;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @JsonInclude(Include.NON_NULL)
 @JsonFilter("bookJsonFilter")
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class BookView {
 
-  private Book book;
+  private final Book book;
 
   public Integer getId() {
     return book.getId();

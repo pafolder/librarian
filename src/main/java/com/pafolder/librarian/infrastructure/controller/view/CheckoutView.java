@@ -6,17 +6,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.pafolder.librarian.domain.model.Checkout;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @JsonInclude(Include.NON_NULL)
 @JsonFilter("checkoutJsonFilter")
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class CheckoutView {
 
-  private Checkout checkout;
+  private final Checkout checkout;
 
   public Integer getId() {
     return checkout.getId();
