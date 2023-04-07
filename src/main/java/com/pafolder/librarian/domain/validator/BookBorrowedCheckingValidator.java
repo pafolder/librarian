@@ -1,4 +1,4 @@
-package com.pafolder.librarian.application.validator;
+package com.pafolder.librarian.domain.validator;
 
 import com.pafolder.librarian.domain.model.Book;
 import jakarta.validation.ConstraintValidator;

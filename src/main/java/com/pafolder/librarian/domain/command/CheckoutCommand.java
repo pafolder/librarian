@@ -1,8 +1,8 @@
-package com.pafolder.librarian.application.command;
+package com.pafolder.librarian.domain.command;
 
-import com.pafolder.librarian.application.validator.BookBorrowedChecking;
-import com.pafolder.librarian.application.validator.BookingLimit;
-import com.pafolder.librarian.application.validator.ViolationLimit;
+import com.pafolder.librarian.domain.validator.BookBorrowedChecking;
+import com.pafolder.librarian.domain.validator.BookingLimit;
+import com.pafolder.librarian.domain.validator.ViolationLimit;
 import com.pafolder.librarian.domain.model.Book;
 import com.pafolder.librarian.domain.model.Checkout;
 import com.pafolder.librarian.domain.model.User;
@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @RequiredArgsConstructor
 public class CheckoutCommand implements Command<Checkout> {
+
+  private static final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 
   @BookingLimit(maxBooksAllowedAtOnce = 3)
   @ViolationLimit(maxViolation = 1, borrowDurationDays = 14)
@@ -33,7 +35,6 @@ public class CheckoutCommand implements Command<Checkout> {
   }
 
   private void validate() {
-    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
 
     var errors = validator.validate(this);

@@ -3,7 +3,7 @@ package com.pafolder.librarian.application.service;
 import static com.pafolder.librarian.infrastructure.controller.admin.AdminCheckoutController.NO_CHECKOUT_FOUND;
 import static com.pafolder.librarian.infrastructure.controller.profile.BookController.NO_BOOK_FOUND;
 
-import com.pafolder.librarian.application.command.CheckoutCommand;
+import com.pafolder.librarian.domain.command.CheckoutCommand;
 import com.pafolder.librarian.domain.model.Book;
 import com.pafolder.librarian.domain.model.Checkout;
 import com.pafolder.librarian.domain.model.User;
@@ -38,7 +38,8 @@ public class CheckoutServiceImpl implements CheckoutService {
         .book(bookRepository.findById(bookId)
             .orElseThrow(() -> new NoSuchElementException(NO_BOOK_FOUND)))
         .user(userService.getById(userId).orElseThrow())
-        .build().execute();
+        .build()
+        .execute();
 
     bookRepository.updateAmount(checkout.getBook().getId(), checkout.getBook().getAmount());
     return checkoutRepository.save(checkout);

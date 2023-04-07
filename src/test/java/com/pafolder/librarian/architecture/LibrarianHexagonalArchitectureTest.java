@@ -1,20 +1,16 @@
 package com.pafolder.librarian.architecture;
 
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 import static com.tngtech.archunit.library.Architectures.onionArchitecture;
 
 import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
-import com.tngtech.archunit.core.importer.ImportOption.Predefined;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
-import jakarta.inject.Named;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.stereotype.Component;
 
 @AnalyzeClasses(packages = "com.pafolder.librarian")
 public class LibrarianHexagonalArchitectureTest {
@@ -46,7 +42,7 @@ public class LibrarianHexagonalArchitectureTest {
   public void onionArchitectureTest() {
     onionArchitecture()
         .ensureAllClassesAreContainedInArchitectureIgnoring("com.pafolder.librarian..")
-        .domainModels("..domain.model..")
+        .domainModels("..domain..")
         .domainServices("..domain.service..", "..domain.repository..")
         .applicationServices("..application..")
         .adapter("infrastructure", "..infrastructure..")
@@ -58,6 +54,15 @@ public class LibrarianHexagonalArchitectureTest {
     ArchRule rule = ArchRuleDefinition.noClasses()
         .that().resideInAPackage("..domain..")
         .should().accessClassesThat().resideInAPackage("..application..");
+
+    rule.check(importedClasses);
+  }
+
+  @Test
+  public void domain_should_not_use_hibernate() {
+    ArchRule rule = ArchRuleDefinition.noClasses()
+        .that().resideInAPackage("..domain..")
+        .should().accessClassesThat().resideInAPackage("..hibernate..");
 
     rule.check(importedClasses);
   }
