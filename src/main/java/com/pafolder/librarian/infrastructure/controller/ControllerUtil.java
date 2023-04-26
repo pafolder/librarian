@@ -8,10 +8,8 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.pafolder.librarian.domain.model.Checkout;
 import com.pafolder.librarian.domain.model.User;
-import com.pafolder.librarian.domain.repository.CheckoutRepository;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.converter.json.MappingJacksonValue;
 

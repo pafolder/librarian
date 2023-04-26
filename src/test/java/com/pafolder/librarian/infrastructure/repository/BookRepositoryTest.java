@@ -1,7 +1,6 @@
 package com.pafolder.librarian.infrastructure.repository;
 
 import com.pafolder.librarian.domain.model.Book;
-import com.pafolder.librarian.domain.repository.BookRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.pafolder.librarian.infrastructure.controller.validator;
 
 import com.pafolder.librarian.domain.model.User;
-import com.pafolder.librarian.domain.repository.UserRepository;
+import com.pafolder.librarian.infrastructure.repository.UserRepository;
 import com.pafolder.librarian.infrastructure.security.UserDetailsImpl;
 import com.pafolder.librarian.infrastructure.controller.UserTo;
 import jakarta.servlet.http.HttpServletRequest;

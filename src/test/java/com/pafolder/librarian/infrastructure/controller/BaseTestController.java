@@ -2,8 +2,8 @@ package com.pafolder.librarian.infrastructure.controller;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
-import com.pafolder.librarian.domain.repository.BookRepository;
-import com.pafolder.librarian.domain.repository.CheckoutRepository;
+import com.pafolder.librarian.infrastructure.repository.BookRepository;
+import com.pafolder.librarian.infrastructure.repository.CheckoutRepository;
 import com.pafolder.librarian.application.service.UserServiceImpl;
 import jakarta.annotation.PostConstruct;
 import java.util.Locale;

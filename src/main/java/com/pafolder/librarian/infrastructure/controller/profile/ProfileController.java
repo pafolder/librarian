@@ -5,7 +5,7 @@ import static com.pafolder.librarian.infrastructure.controller.ControllerUtil.ge
 import com.pafolder.librarian.domain.service.UserService;
 import com.pafolder.librarian.infrastructure.controller.admin.AdminUserController;
 import com.pafolder.librarian.domain.model.User;
-import com.pafolder.librarian.domain.repository.CheckoutRepository;
+import com.pafolder.librarian.infrastructure.repository.CheckoutRepository;
 import com.pafolder.librarian.infrastructure.security.UserDetailsImpl;
 import com.pafolder.librarian.infrastructure.controller.UserTo;
 import com.pafolder.librarian.infrastructure.controller.validator.UserToValidator;
