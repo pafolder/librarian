@@ -25,7 +25,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Getter
@@ -92,13 +91,8 @@ public class User {
         .collect(Collectors.toList());
   }
 
-  public enum Role implements GrantedAuthority {
+  public enum Role {
     USER,
     ADMIN;
-
-    @Override
-    public String getAuthority() {
-      return "ROLE_" + name();
-    }
   }
 }
