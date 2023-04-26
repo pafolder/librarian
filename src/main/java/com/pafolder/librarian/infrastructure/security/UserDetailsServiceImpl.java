@@ -1,7 +1,7 @@
 package com.pafolder.librarian.infrastructure.security;
 
 import com.pafolder.librarian.domain.model.User;
-import com.pafolder.librarian.domain.repository.UserRepository;
+import com.pafolder.librarian.infrastructure.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

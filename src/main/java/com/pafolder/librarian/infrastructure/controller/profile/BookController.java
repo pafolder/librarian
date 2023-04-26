@@ -3,7 +3,7 @@ package com.pafolder.librarian.infrastructure.controller.profile;
 import static com.pafolder.librarian.infrastructure.controller.ControllerUtil.getFilteredBooksJson;
 
 import com.pafolder.librarian.domain.model.Book;
-import com.pafolder.librarian.domain.repository.BookRepository;
+import com.pafolder.librarian.infrastructure.repository.BookRepository;
 import com.pafolder.librarian.infrastructure.controller.view.BookView;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

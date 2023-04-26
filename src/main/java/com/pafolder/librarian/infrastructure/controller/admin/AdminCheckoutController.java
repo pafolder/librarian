@@ -5,7 +5,7 @@ import static com.pafolder.librarian.infrastructure.controller.ControllerUtil.ge
 import static com.pafolder.librarian.infrastructure.controller.ControllerUtil.getFutureViolations;
 
 import com.pafolder.librarian.domain.model.Checkout;
-import com.pafolder.librarian.domain.repository.CheckoutRepository;
+import com.pafolder.librarian.infrastructure.repository.CheckoutRepository;
 import com.pafolder.librarian.infrastructure.controller.view.CheckoutView;
 import com.pafolder.librarian.infrastructure.security.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;

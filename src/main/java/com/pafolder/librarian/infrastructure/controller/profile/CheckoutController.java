@@ -3,7 +3,7 @@ package com.pafolder.librarian.infrastructure.controller.profile;
 import static com.pafolder.librarian.infrastructure.controller.ControllerUtil.getFilteredCheckoutsJson;
 
 import com.pafolder.librarian.domain.model.Checkout;
-import com.pafolder.librarian.domain.repository.CheckoutRepository;
+import com.pafolder.librarian.infrastructure.repository.CheckoutRepository;
 import com.pafolder.librarian.domain.service.CheckoutService;
 import com.pafolder.librarian.infrastructure.controller.view.CheckoutView;
 import com.pafolder.librarian.infrastructure.security.UserDetailsImpl;
